@@ -1,2 +1,60 @@
-# Auto detect text files and perform LF normalization
 * text=auto
+
+*.cs            text eol=lf
+*.shader        text eol=lf
+*.cginc         text eol=lf
+*.hlsl          text eol=lf
+*.compute       text eol=lf
+*.json          text eol=lf
+*.yaml          text eol=lf
+*.yml           text eol=lf
+*.asmdef        text eol=lf
+*.asmref        text eol=lf
+*.meta          text eol=lf
+*.unity         text eol=lf
+*.prefab        text eol=lf
+*.mat           text eol=lf
+*.anim          text eol=lf
+*.controller    text eol=lf
+*.overrideController text eol=lf
+*.physicmaterial text eol=lf
+
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.tga           binary
+*.psd           binary
+*.tif           binary
+*.tiff          binary
+*.exr           binary
+*.hdr           binary
+*.ico           binary
+
+*.wav           binary
+*.mp3           binary
+*.ogg           binary
+*.aac           binary
+*.aif           binary
+*.aiff          binary
+
+*.fbx           binary
+*.obj           text eol=lf  
+*.dae           text eol=lf
+
+*.unitypackage  binary
+*.dll           binary
+*.so            binary
+*.dylib         binary
+*.a             binary
+*.jar           binary
+*.aar           binary
+*.pdf           binary
+
+*.unity         merge=unityyamlmerge
+*.prefab        merge=unityyamlmerge
+*.mat           merge=unityyamlmerge
+*.anim          merge=unityyamlmerge
+*.controller    merge=unityyamlmerge
+*.overrideController merge=unityyamlmerge
+*.meta          merge=unityyamlmerge
+*.physicmaterial merge=unityyamlmerge
