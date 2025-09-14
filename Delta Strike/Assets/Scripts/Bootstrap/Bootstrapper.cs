@@ -8,6 +8,7 @@ using Game.Input;
 
 namespace Game.Bootstrap
 {
+    [DefaultExecutionOrder(-1000)]
     public sealed class Bootstrapper : MonoBehaviour
     {
         [Header("Configs")]
