@@ -4,6 +4,7 @@ using Game.Core.Save;
 using Game.Enemies;
 using Game.Systems.Progress;
 using UnityEngine;
+using Game.Input;
 
 namespace Game.Bootstrap
 {
@@ -12,6 +13,9 @@ namespace Game.Bootstrap
         [Header("Configs")]
         public UpgradeConfig upgradeConfig;
         public EnemyConfig enemyConfig;
+
+        [Header("Input")]
+        public InputMode inputMode = InputMode.Desktop;
 
         private void Awake()
         {
@@ -28,6 +32,10 @@ namespace Game.Bootstrap
             progress.Load();
             DI.Bind<IProgressService>(progress);
 
+            if (inputMode == InputMode.Desktop || !Application.isMobilePlatform)
+                DI.Bind<IInputService>(new DesktopInputService());
+            else
+                DI.Bind<IInputService>(new MobileInputService());
         }
     }
 }
