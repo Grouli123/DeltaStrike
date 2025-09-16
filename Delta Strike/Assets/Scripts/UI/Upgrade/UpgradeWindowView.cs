@@ -17,6 +17,11 @@ namespace Game.UI.Upgrade
         [SerializeField] private Button applyButton;
         [SerializeField] private Button cancelButton;
         [SerializeField] private Button closeButton;
+        
+        [Header("UX")]
+        [SerializeField] private GameObject blocker;          
+        [SerializeField] private bool closeOnEsc = true;      
+        [SerializeField] private bool closeOnBlockerClick = true;
 
         private UpgradeConfig _cfg;
         private IProgressService _progress;
@@ -42,14 +47,25 @@ namespace Game.UI.Upgrade
                 closeButton.onClick.RemoveAllListeners();
                 closeButton.onClick.AddListener(Close);
             }
+
+            if (blocker != null && closeOnBlockerClick)
+            {
+                var btn = blocker.GetComponent<Button>();
+                if (btn == null) btn = blocker.AddComponent<Button>();
+                btn.transition = Selectable.Transition.None;
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(Close);
+            }
         }
 
         private void OnEnable()
         {
             ResetPending();
             Refresh();
-            
-            _block?.SetBlocked(true); 
+
+            if (blocker) blocker.SetActive(true);
+
+            _block?.SetBlocked(true);
 
 #if !UNITY_ANDROID && !UNITY_IOS
             _cursorWasLocked = Cursor.lockState == CursorLockMode.Locked;
@@ -57,11 +73,21 @@ namespace Game.UI.Upgrade
             Cursor.visible = true;
 #endif
         }
-        
+
+        private void Update()
+        {
+#if !UNITY_ANDROID && !UNITY_IOS
+            if (closeOnEsc && UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.Escape))
+                Close();
+#endif
+        }
+
         private void OnDisable()
         {
+            if (blocker) blocker.SetActive(false);
+
             _block?.SetBlocked(false);
-            
+
 #if !UNITY_ANDROID && !UNITY_IOS
             if (_cursorWasLocked)
             {
@@ -92,9 +118,24 @@ namespace Game.UI.Upgrade
 
         private int GetLevel(StatType stat) => _progress.GetLevel(stat);
 
+        private bool HasPendingChanges()
+        {
+            bool changed = _tempPoints != _progress.Points;
+            foreach (var def in _cfg.Upgrades)
+            {
+                if (_pendingLevels[def.type] != _progress.GetLevel(def.type))
+                {
+                    changed = true;
+                    break;
+                }
+            }
+            return changed;
+        }
+        
         private void Refresh()
         {
             if (pointsText) pointsText.text = $"Points: {_tempPoints}";
+
             foreach (Transform c in itemsRoot)
             {
                 var item = c.GetComponent<UpgradeItemView>();
@@ -102,8 +143,11 @@ namespace Game.UI.Upgrade
                 var def = item.Def;
                 int lvl = _pendingLevels[def.type];
                 bool canPlus = _tempPoints > 0 && lvl < def.maxLevel;
-                item.SetLevel(lvl, canPlus);
+                item.SetLevel(lvl, canPlus);              
             }
+
+            if (applyButton)  applyButton.interactable  = HasPendingChanges();
+            if (cancelButton) cancelButton.interactable = HasPendingChanges();
         }
 
         private void OnPlusClicked(UpgradeDef def)
@@ -126,6 +170,9 @@ namespace Game.UI.Upgrade
 
             var playerHealth = FindObjectOfType<Game.Player.PlayerHealth>();
             if (playerHealth != null) playerHealth.RecalculateFromStats();
+
+            ResetPending();
+            Refresh();
         }
 
         private void Cancel()
@@ -133,7 +180,7 @@ namespace Game.UI.Upgrade
             ResetPending();
             Refresh();
         }
-        
+
         private void Close()
         {
             gameObject.SetActive(false);
