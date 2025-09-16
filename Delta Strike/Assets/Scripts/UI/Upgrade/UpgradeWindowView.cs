@@ -5,6 +5,7 @@ using Game.Systems.Progress;
 using TMPro;                 
 using UnityEngine;
 using UnityEngine.UI;
+using Game.Core.App;  
 
 namespace Game.UI.Upgrade
 {
@@ -23,27 +24,50 @@ namespace Game.UI.Upgrade
         private int _tempPoints;
 
         private bool _cursorWasLocked;
+        
+        private IGameplayBlockService _block;
 
         private void Awake()
         {
             _cfg = DI.Resolve<UpgradeConfig>();
             _progress = DI.Resolve<IProgressService>();
+            _block = DI.Resolve<IGameplayBlockService>(); 
 
             Build();
             if (applyButton) applyButton.onClick.AddListener(Apply);
             if (cancelButton) cancelButton.onClick.AddListener(Cancel);
-            if (closeButton) closeButton.onClick.AddListener(Cancel);
+            
+            if (closeButton)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(Close);
+            }
         }
 
         private void OnEnable()
         {
             ResetPending();
             Refresh();
+            
+            _block?.SetBlocked(true); 
 
 #if !UNITY_ANDROID && !UNITY_IOS
             _cursorWasLocked = Cursor.lockState == CursorLockMode.Locked;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+#endif
+        }
+        
+        private void OnDisable()
+        {
+            _block?.SetBlocked(false);
+            
+#if !UNITY_ANDROID && !UNITY_IOS
+            if (_cursorWasLocked)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
 #endif
         }
 
@@ -102,24 +126,17 @@ namespace Game.UI.Upgrade
 
             var playerHealth = FindObjectOfType<Game.Player.PlayerHealth>();
             if (playerHealth != null) playerHealth.RecalculateFromStats();
-
-            gameObject.SetActive(false);
         }
 
         private void Cancel()
         {
-            gameObject.SetActive(false);
+            ResetPending();
+            Refresh();
         }
-
-        private void OnDisable()
+        
+        private void Close()
         {
-#if !UNITY_ANDROID && !UNITY_IOS
-            if (_cursorWasLocked)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-#endif
+            gameObject.SetActive(false);
         }
     }
 }

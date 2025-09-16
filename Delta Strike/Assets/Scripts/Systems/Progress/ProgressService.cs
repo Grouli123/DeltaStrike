@@ -18,7 +18,7 @@ namespace Game.Systems.Progress
 
         public void AddPoints(int amount)
         {
-            Points = Mathf.Max(0, Points + Mathf.Max(0, amount));
+            Points = Mathf.Max(0, Points + amount); 
             Save();
         }
 

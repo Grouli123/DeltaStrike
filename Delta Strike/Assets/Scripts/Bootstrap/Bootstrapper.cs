@@ -32,6 +32,7 @@ namespace Game.Bootstrap
             var progress = new ProgressService();
             progress.Load();
             DI.Bind<IProgressService>(progress);
+            DI.Bind<Game.Core.App.IGameplayBlockService>(new Game.Core.App.GameplayBlockService());
 
             if (inputMode == InputMode.Desktop || !Application.isMobilePlatform)
                 DI.Bind<IInputService>(new DesktopInputService());

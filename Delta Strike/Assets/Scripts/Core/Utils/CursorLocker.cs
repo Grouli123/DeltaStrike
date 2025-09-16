@@ -1,46 +1,40 @@
-﻿using UnityEngine;
+﻿using Game.Core.App;
+using Game.Core.DI;
+using UnityEngine;
 
-namespace Game.Core.Utils
+public sealed class CursorLocker : MonoBehaviour
 {
-    public sealed class CursorLocker : MonoBehaviour
+    [SerializeField] private bool lockOnStart = true;
+    private IGameplayBlockService _block;
+
+    private void Awake()
     {
-        [SerializeField] private bool lockOnStart = true;
+        _block = DI.Resolve<IGameplayBlockService>();
+        _block.OnChanged += OnBlockChanged;
 
-        private int _uiRequests = 0; 
+        if (lockOnStart) Lock();
+    }
 
-        private void Start()
-        {
-            if (lockOnStart) Lock();
-            else Unlock();
-        }
+    private void OnDestroy()
+    {
+        if (_block != null) _block.OnChanged -= OnBlockChanged;
+    }
 
-        private void Update()
-        {
-            if (!Application.isFocused || _uiRequests > 0)
-            {
-                Unlock();
-                return;
-            }
+    private void OnBlockChanged(bool blocked)
+    {
+        if (blocked) Unlock();   
+        else Lock();             
+    }
 
-            if (Cursor.lockState != CursorLockMode.Locked)
-                Lock();
-        }
+    private void Lock()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
-        public void RequestUiUnlock(bool enable)
-        {
-            _uiRequests = Mathf.Clamp(_uiRequests + (enable ? 1 : -1), 0, 1000);
-        }
-
-        public void Lock()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        public void Unlock()
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+    private void Unlock()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }

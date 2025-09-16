@@ -297,7 +297,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 174157972}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcff6a59fabd4cb0a7a4e12eb9d5a37e, type: 3}
   m_Name: 
@@ -386,7 +386,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.73600006, y: 0.88500005}
   m_AnchorMax: {x: 0.8474582, y: 0.9233507}
-  m_AnchoredPosition: {x: 0.050964355, y: -0.9289551}
+  m_AnchoredPosition: {x: 0.05102539, y: -0.9289551}
   m_SizeDelta: {x: -5.1019993, y: -6.141}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &271561405
@@ -793,7 +793,6 @@ GameObject:
   - component: {fileID: 423161858}
   - component: {fileID: 423161857}
   - component: {fileID: 423161856}
-  - component: {fileID: 423161860}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -902,24 +901,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423161854}
   m_CullTransparentMesh: 1
---- !u!114 &423161860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423161854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5509782f66a4d96806ab8e0f448b535, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointsText: {fileID: 1150487207}
-  itemsRoot: {fileID: 1581772197}
-  itemPrefab: {fileID: 2408814777998458901, guid: 94cd77254761571489ea38cfef43eb76, type: 3}
-  applyButton: {fileID: 1849873238}
-  cancelButton: {fileID: 1927698659}
-  closeButton: {fileID: 1978538144}
 --- !u!1 &441315222
 GameObject:
   m_ObjectHideFlags: 0
@@ -2552,6 +2533,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1308553050}
+  - component: {fileID: 1308553051}
   m_Layer: 5
   m_Name: UpgradeWindow
   m_TagString: Untagged
@@ -2580,6 +2562,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1308553051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308553047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5509782f66a4d96806ab8e0f448b535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointsText: {fileID: 1150487207}
+  itemsRoot: {fileID: 1581772197}
+  itemPrefab: {fileID: 2408814777998458901, guid: 94cd77254761571489ea38cfef43eb76, type: 3}
+  applyButton: {fileID: 1849873238}
+  cancelButton: {fileID: 1927698659}
+  closeButton: {fileID: 1978538144}
 --- !u!1 &1330025762
 GameObject:
   m_ObjectHideFlags: 0

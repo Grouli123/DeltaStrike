@@ -2,6 +2,7 @@
 using Game.Core.DI;
 using Game.Input;
 using UnityEngine;
+using Game.Core.App; 
 
 namespace Game.Player
 {
@@ -25,6 +26,7 @@ namespace Game.Player
 
         private UpgradeConfig _cfg;
         private Game.Systems.Progress.IProgressService _progress;
+        private IGameplayBlockService _block;
 
         private void Awake()
         {
@@ -32,6 +34,7 @@ namespace Game.Player
             _input = DI.Resolve<IInputService>();
             _cfg = DI.Resolve<UpgradeConfig>();
             _progress = DI.Resolve<Game.Systems.Progress.IProgressService>();
+            _block = DI.Resolve<IGameplayBlockService>();
 
             if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
             if (cameraPivot == null && playerCamera != null) cameraPivot = playerCamera.transform;
@@ -47,6 +50,8 @@ namespace Game.Player
 
         private void Update()
         {
+            if (_block != null && _block.IsBlocked) return;
+            
             var look = _input.LookDelta * lookSensitivity;
             transform.Rotate(0f, look.x, 0f);
             _pitch = Mathf.Clamp(_pitch - look.y, -80f, 80f);
