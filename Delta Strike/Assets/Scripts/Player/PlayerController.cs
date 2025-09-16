@@ -10,7 +10,7 @@ namespace Game.Player
     {
         [Header("Refs")]
         [SerializeField] private Camera playerCamera;
-        [SerializeField] private Game.Player.Gun.RaycastGun gun;
+        [SerializeField] private Game.Player.Gun.ProjectileGun gun;
         [SerializeField] private Transform cameraPivot;
 
         [Header("Movement")]
