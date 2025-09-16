@@ -1,4 +1,5 @@
 ﻿using Game.Core.Config;
+using TMPro;                 
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,12 +7,13 @@ namespace Game.UI.Upgrade
 {
     public sealed class UpgradeItemView : MonoBehaviour
     {
-        [SerializeField] private Text label;
-        [SerializeField] private Text levelText;
+        [SerializeField] private TMP_Text label;               
+        [SerializeField] private TMP_Text levelText;           
         [SerializeField] private Button plusButton;
         [SerializeField] private Image iconImage;
 
         public UpgradeDef Def { get; private set; }
+
         private System.Action<UpgradeDef> _onPlus;
 
         public void Setup(UpgradeDef def, int currentLevel, System.Action<UpgradeDef> onPlus)

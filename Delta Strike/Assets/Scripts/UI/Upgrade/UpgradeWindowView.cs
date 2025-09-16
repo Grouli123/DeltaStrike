@@ -2,6 +2,7 @@
 using Game.Core.Config;
 using Game.Core.DI;
 using Game.Systems.Progress;
+using TMPro;                 
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace Game.UI.Upgrade
 {
     public sealed class UpgradeWindowView : MonoBehaviour
     {
-        [SerializeField] private Text pointsText;
+        [SerializeField] private TMP_Text pointsText;          
         [SerializeField] private Transform itemsRoot;
         [SerializeField] private UpgradeItemView itemPrefab;
         [SerializeField] private Button applyButton;
@@ -18,8 +19,10 @@ namespace Game.UI.Upgrade
 
         private UpgradeConfig _cfg;
         private IProgressService _progress;
-        private Dictionary<StatType, int> _pendingLevels = new();
+        private readonly Dictionary<StatType, int> _pendingLevels = new();
         private int _tempPoints;
+
+        private bool _cursorWasLocked;
 
         private void Awake()
         {
@@ -36,6 +39,12 @@ namespace Game.UI.Upgrade
         {
             ResetPending();
             Refresh();
+
+#if !UNITY_ANDROID && !UNITY_IOS
+            _cursorWasLocked = Cursor.lockState == CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+#endif
         }
 
         private void Build()
@@ -100,6 +109,17 @@ namespace Game.UI.Upgrade
         private void Cancel()
         {
             gameObject.SetActive(false);
+        }
+
+        private void OnDisable()
+        {
+#if !UNITY_ANDROID && !UNITY_IOS
+            if (_cursorWasLocked)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+#endif
         }
     }
 }

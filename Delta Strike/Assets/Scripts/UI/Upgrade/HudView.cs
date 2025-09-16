@@ -1,5 +1,4 @@
 ﻿using Game.Core.DI;
-using Game.Core.Utils;
 using UnityEngine;
 
 namespace Game.UI.Upgrade
@@ -7,35 +6,41 @@ namespace Game.UI.Upgrade
     public sealed class HudView : MonoBehaviour
     {
         [SerializeField] private GameObject upgradeWindowRoot;
-        private Game.Input.IInputService _input;
-        private CursorLocker _locker;
-        private bool _cursorToggled;
 
-        private void Start()
+        private Game.Input.IInputService _input;
+
+        private void Awake()
         {
-            _input  = DI.Resolve<Game.Input.IInputService>();
-            _locker = FindObjectOfType<CursorLocker>();
-            if (upgradeWindowRoot != null) upgradeWindowRoot.SetActive(false);
+            _input = DI.Resolve<Game.Input.IInputService>();
+            if (upgradeWindowRoot != null)
+                upgradeWindowRoot.SetActive(false);
         }
 
-        public void OnOpenUpgrades()
+        public void OnOpenUpgrades() => Open();
+
+        public void Toggle()
         {
-            if (upgradeWindowRoot != null)
-            {
-                upgradeWindowRoot.SetActive(true);
-                _locker?.RequestUiUnlock(true);
-            }
-            else
-            {
-                _cursorToggled = !_cursorToggled;
-                _locker?.RequestUiUnlock(_cursorToggled);
-            }
+            if (upgradeWindowRoot == null) return;
+            bool next = !upgradeWindowRoot.activeSelf;
+            upgradeWindowRoot.SetActive(next);
+        }
+
+        public void Open()
+        {
+            if (upgradeWindowRoot == null) return;
+            upgradeWindowRoot.SetActive(true);
+        }
+
+        public void Close()
+        {
+            if (upgradeWindowRoot == null) return;
+            upgradeWindowRoot.SetActive(false);
         }
 
         private void Update()
         {
             if (_input.IsOpenUpgradePressed)
-                OnOpenUpgrades();
+                Toggle();
         }
     }
 }
