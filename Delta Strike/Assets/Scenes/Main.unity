@@ -2719,7 +2719,7 @@ MonoBehaviour:
   applyButton: {fileID: 1849873238}
   cancelButton: {fileID: 1927698659}
   closeButton: {fileID: 1978538144}
-  blocker: {fileID: 0}
+  blocker: {fileID: 479674031}
   closeOnEsc: 1
   closeOnBlockerClick: 1
 --- !u!1 &1330025762
