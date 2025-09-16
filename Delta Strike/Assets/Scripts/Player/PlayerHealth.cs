@@ -23,6 +23,7 @@ namespace Game.Player
         public float Current { get; protected set; }
         public event Action<float, float> OnChanged;
         public event Action OnDied;
+        [SerializeField] private float debugCurrent;
 
         protected virtual void Awake()
         {
@@ -33,9 +34,18 @@ namespace Game.Player
         public virtual void TakeDamage(float amount)
         {
             if (Current <= 0f) return;
+
+            float before = Current;
             Current = Mathf.Max(0f, Current - Mathf.Max(0f, amount));
+            Debug.Log($"[HealthBase] {name} TakeDamage {amount} | {before} -> {Current}");
+
             OnChanged?.Invoke(Current, Max);
             if (Current <= 0f) OnDied?.Invoke();
+        }
+
+        private void LateUpdate()
+        {
+            debugCurrent = Current;
         }
 
         public void HealFull()

@@ -15,5 +15,5 @@ MonoBehaviour:
   minHP: 40
   maxHP: 120
   moveSpeed: 2
-  detectRange: 20
+  detectRange: 50
   stopDistance: 1.5

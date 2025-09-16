@@ -38,6 +38,13 @@ namespace Game.Player
 
             if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
             if (cameraPivot == null && playerCamera != null) cameraPivot = playerCamera.transform;
+
+            if (!Game.Core.DI.DI.TryResolve<IPlayerRef>(out var playerRef))
+            {
+                playerRef = new PlayerRef();
+                Game.Core.DI.DI.Bind<IPlayerRef>(playerRef);
+            }
+            playerRef.Attach(this);
         }
 
         private float GetSpeed()

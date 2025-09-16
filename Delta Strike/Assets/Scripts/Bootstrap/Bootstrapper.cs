@@ -5,6 +5,7 @@ using Game.Enemies;
 using Game.Systems.Progress;
 using UnityEngine;
 using Game.Input;
+using Game.Core.App;
 
 namespace Game.Bootstrap
 {
@@ -20,6 +21,9 @@ namespace Game.Bootstrap
 
         private void Awake()
         {
+            if (!DI.TryResolve<IPlayerRef>(out _))
+                DI.Bind<IPlayerRef>(new Game.Core.App.PlayerRef());
+
             Application.targetFrameRate = 120;
 
             DI.Clear();
