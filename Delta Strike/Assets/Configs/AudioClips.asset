@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bff9536c56d4fbf842df613c559f418, type: 3}
+  m_Name: AudioClips
+  m_EditorClassIdentifier: 
+  fire: {fileID: 8300000, guid: f1f721db2fe0b9744916de5408ddb4b2, type: 3}
+  impact: {fileID: 8300000, guid: 0e25d8c8b513906469c6e7765efc6a78, type: 3}
+  enemyDeath: {fileID: 8300000, guid: d37c980f12fa41446b9148fbf86afbbb, type: 3}
+  playerHit: {fileID: 8300000, guid: b8b05971432c9744f84b6b5ef71312bc, type: 3}

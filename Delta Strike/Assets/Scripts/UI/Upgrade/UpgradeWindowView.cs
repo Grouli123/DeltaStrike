@@ -173,6 +173,7 @@ namespace Game.UI.Upgrade
 
             ResetPending();
             Refresh();
+            Close();
         }
 
         private void Cancel()

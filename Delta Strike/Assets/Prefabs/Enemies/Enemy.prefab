@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2606316484156744727}
   - component: {fileID: 6688240717634437135}
   - component: {fileID: 5209703210142310065}
+  - component: {fileID: 8277459139352238384}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -135,6 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7626e53ea94ac6af414b3ebc194162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 2.5
+  stopDistance: 1.8
 --- !u!114 &5209703210142310065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,3 +153,45 @@ MonoBehaviour:
   damage: 10
   attackCooldown: 1
   attackRange: 1.8
+  attackOrigin: {fileID: 5310826282540616430}
+  autoRangeFromConfig: 1
+  rangeMargin: 0.25
+--- !u!114 &8277459139352238384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995233948240976974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf773a6fcfed4ada99bf24f08e218418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathVfxPrefab: {fileID: 2074007259378776562, guid: 72fa77f5f332bc74f9c11b13419b0a03, type: 3}
+  shrinkTime: 0.35
+  shrinkCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  audioClips: {fileID: 11400000, guid: 4278dbc05455e6848b044f166220a8b1, type: 2}

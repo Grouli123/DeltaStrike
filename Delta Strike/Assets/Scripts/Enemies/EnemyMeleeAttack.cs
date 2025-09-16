@@ -34,10 +34,8 @@ namespace Game.Enemies
 
             TryGetComponent(out _enemyCapsule);
 
-            // NEW: подтянем EnemyConfig и автонастроим радиус удара
             if (DI.TryResolve(out _cfg) && autoRangeFromConfig)
             {
-                // удар должен доставать хотя бы до дистанции, на которой враг останавливается
                 attackRange = Mathf.Max(attackRange, _cfg.stopDistance + rangeMargin);
             }
 

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Game.Core.Pooling;
-using Game.Player;
+using Game.Player;               
 using UnityEngine;
+using Game.Audio; 
+using Game.Core.DI;
 
 namespace Game.Combat
 {
@@ -16,7 +18,13 @@ namespace Game.Combat
 
         [Header("Damage")]
         public float damage = 20f;
-        public LayerMask hitMask = ~0;  
+        public LayerMask hitMask = ~0;
+
+        [Header("Impact FX")]
+        [SerializeField] private GameObject impactVfxPrefab;
+
+        private ObjectPool _audioPool;        
+        private AudioClips _audioClips; 
 
         private Rigidbody _rb;
         private Collider _col;
@@ -25,15 +33,19 @@ namespace Game.Combat
         private GameObject _owner;
 
         private readonly List<Collider> _ignored = new();
+        
+        private IOneShotAudioService _audio;
+        [SerializeField] private Game.AudioClips audioClips;
 
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
             _col = GetComponent<Collider>();
             _pooled = GetComponent<PooledObject>();
-
             _rb.useGravity = false;
             _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+            DI.TryResolve(out _audio); 
         }
 
         private void OnEnable()
@@ -47,6 +59,12 @@ namespace Game.Combat
             _life -= Time.deltaTime;
             if (_life <= 0f)
                 Despawn();
+        }
+
+        public void Inject(ObjectPool audioPool, Game.AudioClips clips)
+        {
+            _audioPool = audioPool;
+            _audioClips = clips;
         }
 
         public void Launch(Vector3 position, Vector3 direction, float speedOverride, float dmg, LayerMask mask, GameObject owner)
@@ -78,20 +96,36 @@ namespace Game.Combat
         {
             var other = collision.collider;
 
+            Vector3 hitPoint  = transform.position;
+            Vector3 hitNormal = -_rb.velocity.normalized;
+            if (collision.contactCount > 0)
+            {
+                var c = collision.GetContact(0);
+                hitPoint  = c.point;
+                hitNormal = c.normal;
+            }
+
             if ((hitMask.value & (1 << other.gameObject.layer)) == 0)
             {
                 Despawn();
                 return;
             }
 
-            if (_owner != null && (other.transform.IsChildOf(_owner.transform)))
-            {
-                return; 
-            }
+            if (_owner != null && other.transform.IsChildOf(_owner.transform))
+                return;
 
             var hp = other.GetComponentInParent<IHealth>() ?? other.GetComponent<IHealth>();
             if (hp != null)
                 hp.TakeDamage(damage);
+
+            if (impactVfxPrefab)
+            {
+                var vfx = Instantiate(impactVfxPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
+                Destroy(vfx, 2f);
+            }
+
+            if (audioClips && audioClips.impact)
+                _audio?.PlayAt(hitPoint, audioClips.impact);
 
             Despawn();
         }
