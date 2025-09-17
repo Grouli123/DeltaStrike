@@ -1,12 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Enemies
 {
     public sealed class EnemyHealth : MonoBehaviour, Game.Player.IHealth
     {
-        [SerializeField] private float max = 100f;
-        public float Max => max;
+        [SerializeField] private float _max = 100f;
+        public float Max => _max;
         public float Current { get; private set; }
 
         public event Action<float, float> OnChanged;
@@ -14,14 +15,14 @@ namespace Game.Enemies
 
         private void Awake()
         {
-            Current = max;
+            Current = _max;
             OnChanged?.Invoke(Current, Max);
         }
 
         public void SetMax(float value)
         {
-            max = Mathf.Max(1f, value);
-            Current = Mathf.Clamp(Current, 0f, max);
+            _max = Mathf.Max(1f, value);
+            Current = Mathf.Clamp(Current, 0f, _max);
             OnChanged?.Invoke(Current, Max);
         }
 

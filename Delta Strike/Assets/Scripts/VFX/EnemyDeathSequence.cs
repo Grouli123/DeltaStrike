@@ -9,13 +9,17 @@ namespace Game.VFX
     [RequireComponent(typeof(Game.Enemies.EnemyHealth))]
     public sealed class EnemyDeathSequence : MonoBehaviour
     {
+        private const int   _PointsPerKill         = 1;
+        private const float _VfxAutoDestroyDelay   = 2f;
+        private const float _MinShrinkScale        = 0f;
+        
         [Header("FX")]
-        [SerializeField] private GameObject deathVfxPrefab;
-        [SerializeField] private float shrinkTime = 0.35f;
-        [SerializeField] private AnimationCurve shrinkCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+        [SerializeField] private GameObject _deathVfxPrefab;
+        [SerializeField] private float _shrinkTime = 0.35f;
+        [SerializeField] private AnimationCurve _shrinkCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
         [Header("SFX")]
-        [SerializeField] private Game.AudioClips audioClips; 
+        [SerializeField] private Game.AudioClips _audioClips; 
 
         private Game.Enemies.EnemyHealth _hp;
         private IProgressService _progress;
@@ -36,19 +40,19 @@ namespace Game.VFX
 
         private void OnDied()
         {
-            _progress.AddPoints(1);
+            _progress.AddPoints(_PointsPerKill);
 
             foreach (var c in GetComponents<MonoBehaviour>())
                 if (c != this) c.enabled = false;
 
-            if (deathVfxPrefab)
+            if (_deathVfxPrefab)
             {
-                var v = Instantiate(deathVfxPrefab, transform.position, Quaternion.identity);
-                Destroy(v, 2f);
+                var v = Instantiate(_deathVfxPrefab, transform.position, Quaternion.identity);
+                Destroy(v, _VfxAutoDestroyDelay);
             }
 
-            if (audioClips && audioClips.enemyDeath)
-                _audio?.PlayAt(transform.position, audioClips.enemyDeath);
+            if (_audioClips && _audioClips.enemyDeath)
+                _audio?.PlayAt(transform.position, _audioClips.enemyDeath);
 
             StartCoroutine(ShrinkAndDie());
         }
@@ -57,10 +61,10 @@ namespace Game.VFX
         {
             var t0 = Time.time;
             var start = transform.localScale;
-            while (Time.time - t0 < shrinkTime)
+            while (Time.time - t0 < _shrinkTime)
             {
-                float k = (Time.time - t0) / shrinkTime;
-                float s = Mathf.Max(0f, shrinkCurve.Evaluate(k));
+                float k = (Time.time - t0) / _shrinkTime;
+                float s = Mathf.Max(_MinShrinkScale, _shrinkCurve.Evaluate(k));
                 transform.localScale = start * s;
                 yield return null;
             }

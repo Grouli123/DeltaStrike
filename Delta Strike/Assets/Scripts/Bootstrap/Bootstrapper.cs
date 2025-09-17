@@ -18,13 +18,15 @@ namespace Game.Bootstrap
 
         [Header("Input")]
         public InputMode inputMode = InputMode.Desktop;
+        
+        private const int _TargetFrameRate = 120;
 
         private void Awake()
         {
             if (!DI.TryResolve<IPlayerRef>(out _))
                 DI.Bind<IPlayerRef>(new Game.Core.App.PlayerRef());
 
-            Application.targetFrameRate = 120;
+            Application.targetFrameRate = _TargetFrameRate;
 
             DI.Clear();
 

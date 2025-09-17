@@ -5,16 +5,16 @@ namespace Game.VFX
 {
     public sealed class MuzzleFlash : MonoBehaviour
     {
-        [SerializeField] private GameObject flashObject;   
-        [SerializeField] private Light flashLight;         
-        [SerializeField] private float flashTime = 0.05f;
+        [SerializeField] private GameObject _flashObject;
+        [SerializeField] private Light _flashLight;  
+        [SerializeField] private float _flashTime = 0.05f;
 
         private Coroutine _co;
 
         private void Awake()
         {
-            if (flashObject) flashObject.SetActive(false);
-            if (flashLight)  flashLight.enabled = false;
+            if (_flashObject) _flashObject.SetActive(false);
+            if (_flashLight)  _flashLight.enabled = false;
         }
 
         public void Play()
@@ -25,13 +25,13 @@ namespace Game.VFX
 
         private IEnumerator FlashRoutine()
         {
-            if (flashObject) flashObject.SetActive(true);
-            if (flashLight)  flashLight.enabled = true;
+            if (_flashObject) _flashObject.SetActive(true);
+            if (_flashLight)  _flashLight.enabled = true;
 
-            yield return new WaitForSeconds(flashTime);
+            yield return new WaitForSeconds(_flashTime);
 
-            if (flashObject) flashObject.SetActive(false);
-            if (flashLight)  flashLight.enabled = false;
+            if (_flashObject) _flashObject.SetActive(false);
+            if (_flashLight)  _flashLight.enabled = false;
             _co = null;
         }
     }

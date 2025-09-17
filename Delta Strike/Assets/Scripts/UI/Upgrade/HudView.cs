@@ -1,40 +1,41 @@
 ﻿using Game.Core.DI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.UI.Upgrade
 {
     public sealed class HudView : MonoBehaviour
     {
-        [SerializeField] private GameObject upgradeWindowRoot;
+        [SerializeField] private GameObject _upgradeWindowRoot;
 
         private Game.Input.IInputService _input;
 
         private void Awake()
         {
             _input = DI.Resolve<Game.Input.IInputService>();
-            if (upgradeWindowRoot != null)
-                upgradeWindowRoot.SetActive(false);
+            if (_upgradeWindowRoot != null)
+                _upgradeWindowRoot.SetActive(false);
         }
 
         public void OnOpenUpgrades() => Open();
 
         public void Toggle()
         {
-            if (upgradeWindowRoot == null) return;
-            bool next = !upgradeWindowRoot.activeSelf;
-            upgradeWindowRoot.SetActive(next);
+            if (_upgradeWindowRoot == null) return;
+            bool next = !_upgradeWindowRoot.activeSelf;
+            _upgradeWindowRoot.SetActive(next);
         }
 
         public void Open()
         {
-            if (upgradeWindowRoot == null) return;
-            upgradeWindowRoot.SetActive(true);
+            if (_upgradeWindowRoot == null) return;
+            _upgradeWindowRoot.SetActive(true);
         }
 
         public void Close()
         {
-            if (upgradeWindowRoot == null) return;
-            upgradeWindowRoot.SetActive(false);
+            if (_upgradeWindowRoot == null) return;
+            _upgradeWindowRoot.SetActive(false);
         }
 
         private void Update()

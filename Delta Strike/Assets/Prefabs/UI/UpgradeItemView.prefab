@@ -100,10 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb91c0a7c42e467db83a38c4c54fa9d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 4240472684101560034}
-  levelText: {fileID: 7085416561577967896}
-  plusButton: {fileID: 6671853068829616295}
-  iconImage: {fileID: 3395059196481483817}
+  _label: {fileID: 4240472684101560034}
+  _levelText: {fileID: 7085416561577967896}
+  _plusButton: {fileID: 6671853068829616295}
+  _iconImage: {fileID: 3395059196481483817}
 --- !u!1 &2533058677993024446
 GameObject:
   m_ObjectHideFlags: 0

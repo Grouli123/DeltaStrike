@@ -187,10 +187,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dd8694128cc44f6a865a78d1498729e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveJoystick: {fileID: 1417625618}
-  lookJoystick: {fileID: 1417625618}
-  fireButton: {fileID: 441315223}
-  lookSensitivity: 120
+  _moveJoystick: {fileID: 1417625618}
+  _lookJoystick: {fileID: 1417625618}
+  _fireButton: {fileID: 441315223}
+  _lookSensitivity: 120
 --- !u!4 &119791654
 Transform:
   m_ObjectHideFlags: 0
@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcff6a59fabd4cb0a7a4e12eb9d5a37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnStart: 1
+  _lockOnStart: 1
 --- !u!1 &192544851
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,11 +732,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bbf69a5247d4fd8b6320c24c32592f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHealth: {fileID: 542086480}
-  fillImage: {fileID: 951170386}
-  slider: {fileID: 394342282}
-  text: {fileID: 124895834}
-  fillFromRight: 1
+  _playerHealth: {fileID: 542086480}
+  _fillImage: {fileID: 951170386}
+  _slider: {fileID: 394342282}
+  _text: {fileID: 124895834}
+  _fillFromRight: 1
 --- !u!1 &396231788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1376,7 +1376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3422078d77e94dd4bf6369bc24eff42b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max: 100
+  _max: 100
   debugCurrent: 0
 --- !u!114 &542086481
 MonoBehaviour:
@@ -1390,9 +1390,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7005d6cf7244e2a9cd20f7383b624f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireCamera: {fileID: 967286415}
-  fireRate: 10
-  range: 100
+  _fireCamera: {fileID: 967286415}
+  _fireRate: 10
+  _range: 100
 --- !u!114 &542086482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1405,12 +1405,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 383ec31102714577ac200f8bd29e736c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 967286415}
-  gun: {fileID: 967286418}
-  cameraPivot: {fileID: 967286417}
-  gravity: -9.81
-  lookSensitivity: 2
-  jumpHeight: 1.2
+  _playerCamera: {fileID: 967286415}
+  _gun: {fileID: 967286418}
+  _cameraPivot: {fileID: 967286417}
+  _gravity: -9.81
+  _lookSensitivity: 2
+  _jumpHeight: 1.2
 --- !u!143 &542086483
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2469,16 +2469,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125c34f8971b477db7219357d898347a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzle: {fileID: 1466872442}
-  bulletPool: {fileID: 1772852002}
-  audioPool: {fileID: 1122218175}
-  muzzleSpeed: 60
-  fireRate: 10
-  hitMask:
+  _muzzle: {fileID: 1466872442}
+  _bulletPool: {fileID: 1772852002}
+  _muzzleSpeed: 60
+  _fireRate: 10
+  _hitMask:
     serializedVersion: 2
     m_Bits: 128
-  muzzleFlash: {fileID: 1241690218}
-  gunClips: {fileID: 11400000, guid: 4278dbc05455e6848b044f166220a8b1, type: 2}
+  _muzzleFlash: {fileID: 1241690218}
+  _gunClips: {fileID: 11400000, guid: 4278dbc05455e6848b044f166220a8b1, type: 2}
 --- !u!1 &1059726197
 GameObject:
   m_ObjectHideFlags: 0
@@ -2557,7 +2556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04ab9cbb9b9143c8b710746ef10ace7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pool: {fileID: 1122218175}
+  _pool: {fileID: 1122218175}
 --- !u!114 &1122218175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2824,7 +2823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a82ca08867c544d5961280b2c6ed1af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upgradeWindowRoot: {fileID: 1308553047}
+  _upgradeWindowRoot: {fileID: 1308553047}
 --- !u!1 &1241690216
 GameObject:
   m_ObjectHideFlags: 0
@@ -2870,9 +2869,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b824936c6d7c49bf81266595c76165fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashObject: {fileID: 945713176}
-  flashLight: {fileID: 527075114}
-  flashTime: 0.05
+  _flashObject: {fileID: 945713176}
+  _flashLight: {fileID: 527075114}
+  _flashTime: 0.05
 --- !u!1 &1279633509
 GameObject:
   m_ObjectHideFlags: 0
@@ -3027,15 +3026,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5509782f66a4d96806ab8e0f448b535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsText: {fileID: 1150487207}
-  itemsRoot: {fileID: 1581772197}
-  itemPrefab: {fileID: 2408814777998458901, guid: 94cd77254761571489ea38cfef43eb76, type: 3}
-  applyButton: {fileID: 1849873238}
-  cancelButton: {fileID: 1927698659}
-  closeButton: {fileID: 1978538144}
-  blocker: {fileID: 479674031}
-  closeOnEsc: 1
-  closeOnBlockerClick: 1
+  _pointsText: {fileID: 1150487207}
+  _itemsRoot: {fileID: 1581772197}
+  _itemPrefab: {fileID: 2408814777998458901, guid: 94cd77254761571489ea38cfef43eb76, type: 3}
+  _applyButton: {fileID: 1849873238}
+  _cancelButton: {fileID: 1927698659}
+  _closeButton: {fileID: 0}
+  _blocker: {fileID: 1978538142}
+  _closeOnEsc: 1
+  _closeOnBlockerClick: 1
 --- !u!1 &1330025762
 GameObject:
   m_ObjectHideFlags: 0
@@ -3209,9 +3208,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1323b2e137e34bd0b2a79cefcaad44e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  background: {fileID: 1417625615}
-  handle: {fileID: 1828476211}
-  handleRange: 80
+  _background: {fileID: 1417625615}
+  _handle: {fileID: 1828476211}
+  _handleRange: 80
 --- !u!1 &1466872441
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,9 +7,9 @@ namespace Game.Player.Gun
 {
     public sealed class RaycastGun : MonoBehaviour
     {
-        [SerializeField] private Camera fireCamera;
-        [SerializeField] private float fireRate = 10f; 
-        [SerializeField] private float range = 100f;
+        [SerializeField] private Camera _fireCamera;
+        [SerializeField] private float _fireRate = 10f; 
+        [SerializeField] private float _range = 100f;
 
         private float _cd;
         private UpgradeConfig _cfg;
@@ -19,7 +19,7 @@ namespace Game.Player.Gun
         {
             _cfg = DI.Resolve<UpgradeConfig>();
             _progress = DI.Resolve<IProgressService>();
-            if (fireCamera == null) fireCamera = Camera.main;
+            if (_fireCamera == null) _fireCamera = Camera.main;
         }
 
         private float GetDamage()
@@ -33,10 +33,10 @@ namespace Game.Player.Gun
         public void TryFire()
         {
             if (_cd > 0f) return;
-            _cd = 1f / Mathf.Max(0.1f, fireRate);
+            _cd = 1f / Mathf.Max(0.1f, _fireRate);
 
-            var ray = new Ray(fireCamera.transform.position, fireCamera.transform.forward);
-            if (Physics.Raycast(ray, out var hit, range))
+            var ray = new Ray(_fireCamera.transform.position, _fireCamera.transform.forward);
+            if (Physics.Raycast(ray, out var hit, _range))
             {
                 var h = hit.collider.GetComponentInParent<IHealth>() ?? hit.collider.GetComponent<IHealth>();
                 if (h != null) h.TakeDamage(GetDamage());

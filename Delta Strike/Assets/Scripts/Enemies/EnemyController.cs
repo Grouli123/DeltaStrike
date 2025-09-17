@@ -1,55 +1,44 @@
-﻿using Game.Core.DI;
-using Game.Core.App;
+﻿using Game.Core.App;
+using Game.Core.DI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Enemies
 {
     [RequireComponent(typeof(EnemyHealth))]
     public sealed class EnemyController : MonoBehaviour
     {
-        private Transform _player;
-        private EnemyHealth _health;
-        private EnemyConfig _cfg;
-        private Game.Systems.Progress.IProgressService _progress;
-        
         [Header("Move")]
-        public float speed = 2.5f;
-        public float stopDistance = 1.8f;   
+        [Min(0f)] public float speed = 2.5f;
+        [Min(0f)] public float stopDistance = 1.8f;
+        [SerializeField] private float _turnLerp = 10f;
 
         private Transform _target;
+        private const float _DirNormEpsilon = 0.0001f;
 
         private void Awake()
         {
-            _health = GetComponent<EnemyHealth>();
-            _cfg = DI.Resolve<EnemyConfig>();
-            _progress = DI.Resolve<Game.Systems.Progress.IProgressService>();
-            
             if (DI.TryResolve<IPlayerRef>(out var pref) && pref.Transform != null)
                 _target = pref.Transform;
             else
                 Debug.LogWarning("[EnemyController] PlayerRef not resolved. Enemy won't move.", this);
         }
 
-        private void Start()
-        {
-            var p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) _player = p.transform;
-        }
-
         private void Update()
         {
-            if (_player == null) return;
+            if (_target == null) return;
 
-            var topPlayer = _player.position - transform.position;
-            float dist = topPlayer.magnitude;
-            if (dist <= _cfg.detectRange && dist > _cfg.stopDistance)
-            {
-                topPlayer.y = 0f;
-                topPlayer.Normalize();
-                transform.position += topPlayer * (_cfg.moveSpeed * Time.deltaTime);
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation, Quaternion.LookRotation(topPlayer), 10f * Time.deltaTime);
-            }
+            Vector3 a = transform.position; a.y = 0f;
+            Vector3 b = _target.position;  b.y = 0f;
+            Vector3 to = b - a;
+            float dist = to.magnitude;
+            if (dist <= stopDistance) return;
+
+            Vector3 dir = to / Mathf.Max(dist, _DirNormEpsilon);
+            transform.position += dir * (speed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                Quaternion.LookRotation(dir, Vector3.up),
+                _turnLerp * Time.deltaTime);
         }
     }
 }

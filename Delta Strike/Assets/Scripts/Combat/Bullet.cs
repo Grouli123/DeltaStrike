@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Game.Core.Pooling;
-using Game.Player;               
+using Game.Player;
 using UnityEngine;
-using Game.Audio; 
+using Game.Audio;
 using Game.Core.DI;
 
 namespace Game.Combat
@@ -12,6 +12,8 @@ namespace Game.Combat
     [RequireComponent(typeof(PooledObject))]
     public sealed class Bullet : MonoBehaviour
     {
+        private const float VfxAutoDestroyDelay = 2f;
+
         [Header("Flight")]
         public float speed = 60f;
         public float maxLifeTime = 3f;
@@ -22,9 +24,7 @@ namespace Game.Combat
 
         [Header("Impact FX")]
         [SerializeField] private GameObject impactVfxPrefab;
-
-        private ObjectPool _audioPool;        
-        private AudioClips _audioClips; 
+        [SerializeField] private Game.AudioClips audioClips;
 
         private Rigidbody _rb;
         private Collider _col;
@@ -33,9 +33,8 @@ namespace Game.Combat
         private GameObject _owner;
 
         private readonly List<Collider> _ignored = new();
-        
+
         private IOneShotAudioService _audio;
-        [SerializeField] private Game.AudioClips audioClips;
 
         private void Awake()
         {
@@ -45,7 +44,7 @@ namespace Game.Combat
             _rb.useGravity = false;
             _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
-            DI.TryResolve(out _audio); 
+            DI.TryResolve(out _audio);
         }
 
         private void OnEnable()
@@ -57,14 +56,7 @@ namespace Game.Combat
         private void Update()
         {
             _life -= Time.deltaTime;
-            if (_life <= 0f)
-                Despawn();
-        }
-
-        public void Inject(ObjectPool audioPool, Game.AudioClips clips)
-        {
-            _audioPool = audioPool;
-            _audioClips = clips;
+            if (_life <= 0f) Despawn();
         }
 
         public void Launch(Vector3 position, Vector3 direction, float speedOverride, float dmg, LayerMask mask, GameObject owner)
@@ -115,13 +107,12 @@ namespace Game.Combat
                 return;
 
             var hp = other.GetComponentInParent<IHealth>() ?? other.GetComponent<IHealth>();
-            if (hp != null)
-                hp.TakeDamage(damage);
+            if (hp != null) hp.TakeDamage(damage);
 
             if (impactVfxPrefab)
             {
                 var vfx = Instantiate(impactVfxPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
-                Destroy(vfx, 2f);
+                Destroy(vfx, VfxAutoDestroyDelay);
             }
 
             if (audioClips && audioClips.impact)

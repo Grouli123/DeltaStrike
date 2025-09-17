@@ -2,6 +2,7 @@
 using Game.Core.DI;
 using Game.Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Enemies
 {
@@ -14,8 +15,8 @@ namespace Game.Enemies
         [Min(0.1f)] public float attackRange = 2.0f; 
         [SerializeField] private Transform attackOrigin;
         
-        [SerializeField] private bool autoRangeFromConfig = true;
-        [SerializeField] private float rangeMargin = 0.25f; 
+        [SerializeField] private bool _autoRangeFromConfig = true;
+        [SerializeField] private float _rangeMargin = 0.25f; 
 
         private float _cd;
         private Transform _playerT;
@@ -24,6 +25,9 @@ namespace Game.Enemies
         private CapsuleCollider _enemyCapsule;
         private EnemyConfig _cfg;
 
+        private const float EnemyCapsuleRadiusWeight = 0.5f;
+        private const float MinAttackCooldown       = 0.05f;
+        private const float GizmoYOffset            = 0.05f;
 
         private void Start()
         {
@@ -34,9 +38,9 @@ namespace Game.Enemies
 
             TryGetComponent(out _enemyCapsule);
 
-            if (DI.TryResolve(out _cfg) && autoRangeFromConfig)
+            if (DI.TryResolve(out _cfg) && _autoRangeFromConfig)
             {
-                attackRange = Mathf.Max(attackRange, _cfg.stopDistance + rangeMargin);
+                attackRange = Mathf.Max(attackRange, _cfg.stopDistance + _rangeMargin);
             }
 
             if (attackOrigin == null) attackOrigin = transform;
@@ -74,7 +78,7 @@ namespace Game.Enemies
             if (inRange && _cd <= 0f)
             {
                 _playerHealth.TakeDamage(damage);
-                _cd = Mathf.Max(0.05f, attackCooldown);
+                _cd = Mathf.Max(MinAttackCooldown, attackCooldown);
             }
         }
 

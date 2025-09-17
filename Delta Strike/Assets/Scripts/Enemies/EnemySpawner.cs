@@ -9,7 +9,9 @@ namespace Game.Enemies
         public Vector3 areaSize = new Vector3(30, 0, 30);
         public GameObject enemyPrefab;
 
-        private EnemyConfig _cfg;
+        private EnemyConfig _cfg; 
+        private const float _Half = 0.5f;       
+        private const float _GizmoY = 0.1f;
 
         private void Start()
         {
@@ -26,9 +28,9 @@ namespace Game.Enemies
             for (int i = 0; i < count; i++)
             {
                 var pos = transform.position + new Vector3(
-                    Random.Range(-areaSize.x * 0.5f, areaSize.x * 0.5f),
+                    Random.Range(-areaSize.x * _Half, areaSize.x * _Half),
                     0f,
-                    Random.Range(-areaSize.z * 0.5f, areaSize.z * 0.5f)
+                    Random.Range(-areaSize.z * _Half, areaSize.z * _Half)
                 );
                 var e = Instantiate(enemyPrefab, pos, Quaternion.identity);
                 var hp = e.GetComponent<EnemyHealth>();
@@ -41,7 +43,7 @@ namespace Game.Enemies
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, new Vector3(areaSize.x, 0.1f, areaSize.z));
+            Gizmos.DrawWireCube(transform.position, new Vector3(areaSize.x, _GizmoY, areaSize.z));
         }
     }
 }

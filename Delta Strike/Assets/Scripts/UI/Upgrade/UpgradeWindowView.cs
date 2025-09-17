@@ -5,33 +5,34 @@ using Game.Systems.Progress;
 using TMPro;                 
 using UnityEngine;
 using UnityEngine.UI;
-using Game.Core.App;  
+using Game.Core.App;
+using UnityEngine.Serialization;
 
 namespace Game.UI.Upgrade
 {
     public sealed class UpgradeWindowView : MonoBehaviour
     {
-        [SerializeField] private TMP_Text pointsText;          
-        [SerializeField] private Transform itemsRoot;
-        [SerializeField] private UpgradeItemView itemPrefab;
-        [SerializeField] private Button applyButton;
-        [SerializeField] private Button cancelButton;
-        [SerializeField] private Button closeButton;
+        [SerializeField] private TMP_Text _pointsText;   
+        [SerializeField] private Transform _itemsRoot;
+        [SerializeField] private UpgradeItemView _itemPrefab;
+        [SerializeField] private Button _applyButton;
+        [SerializeField] private Button _cancelButton;
+        [SerializeField] private Button _closeButton;
         
         [Header("UX")]
-        [SerializeField] private GameObject blocker;          
-        [SerializeField] private bool closeOnEsc = true;      
-        [SerializeField] private bool closeOnBlockerClick = true;
+        [SerializeField] private GameObject _blocker; 
+        [SerializeField] private bool _closeOnEsc = true;   
+        [SerializeField] private bool _closeOnBlockerClick = true;
 
         private UpgradeConfig _cfg;
         private IProgressService _progress;
+        private IGameplayBlockService _block;
         private readonly Dictionary<StatType, int> _pendingLevels = new();
         private int _tempPoints;
+        private const int UpgradeStep = 1;
 
         private bool _cursorWasLocked;
         
-        private IGameplayBlockService _block;
-
         private void Awake()
         {
             _cfg = DI.Resolve<UpgradeConfig>();
@@ -39,19 +40,19 @@ namespace Game.UI.Upgrade
             _block = DI.Resolve<IGameplayBlockService>(); 
 
             Build();
-            if (applyButton) applyButton.onClick.AddListener(Apply);
-            if (cancelButton) cancelButton.onClick.AddListener(Cancel);
+            if (_applyButton) _applyButton.onClick.AddListener(Apply);
+            if (_cancelButton) _cancelButton.onClick.AddListener(Cancel);
             
-            if (closeButton)
+            if (_closeButton)
             {
-                closeButton.onClick.RemoveAllListeners();
-                closeButton.onClick.AddListener(Close);
+                _closeButton.onClick.RemoveAllListeners();
+                _closeButton.onClick.AddListener(Close);
             }
 
-            if (blocker != null && closeOnBlockerClick)
+            if (_blocker != null && _closeOnBlockerClick)
             {
-                var btn = blocker.GetComponent<Button>();
-                if (btn == null) btn = blocker.AddComponent<Button>();
+                var btn = _blocker.GetComponent<Button>();
+                if (btn == null) btn = _blocker.AddComponent<Button>();
                 btn.transition = Selectable.Transition.None;
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(Close);
@@ -63,7 +64,7 @@ namespace Game.UI.Upgrade
             ResetPending();
             Refresh();
 
-            if (blocker) blocker.SetActive(true);
+            if (_blocker) _blocker.SetActive(true);
 
             _block?.SetBlocked(true);
 
@@ -77,14 +78,14 @@ namespace Game.UI.Upgrade
         private void Update()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            if (closeOnEsc && UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.Escape))
+            if (_closeOnEsc && UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.Escape))
                 Close();
 #endif
         }
 
         private void OnDisable()
         {
-            if (blocker) blocker.SetActive(false);
+            if (_blocker) _blocker.SetActive(false);
 
             _block?.SetBlocked(false);
 
@@ -99,10 +100,10 @@ namespace Game.UI.Upgrade
 
         private void Build()
         {
-            foreach (Transform c in itemsRoot) Destroy(c.gameObject);
+            foreach (Transform c in _itemsRoot) Destroy(c.gameObject);
             foreach (var def in _cfg.Upgrades)
             {
-                var item = Instantiate(itemPrefab, itemsRoot);
+                var item = Instantiate(_itemPrefab, _itemsRoot);
                 item.Setup(def, GetLevel(def.type), OnPlusClicked);
             }
         }
@@ -134,9 +135,9 @@ namespace Game.UI.Upgrade
         
         private void Refresh()
         {
-            if (pointsText) pointsText.text = $"Points: {_tempPoints}";
+            if (_pointsText) _pointsText.text = $"Points: {_tempPoints}";
 
-            foreach (Transform c in itemsRoot)
+            foreach (Transform c in _itemsRoot)
             {
                 var item = c.GetComponent<UpgradeItemView>();
                 if (item == null) continue;
@@ -146,8 +147,8 @@ namespace Game.UI.Upgrade
                 item.SetLevel(lvl, canPlus);              
             }
 
-            if (applyButton)  applyButton.interactable  = HasPendingChanges();
-            if (cancelButton) cancelButton.interactable = HasPendingChanges();
+            if (_applyButton)  _applyButton.interactable  = HasPendingChanges();
+            if (_cancelButton) _cancelButton.interactable = HasPendingChanges();
         }
 
         private void OnPlusClicked(UpgradeDef def)
@@ -155,7 +156,7 @@ namespace Game.UI.Upgrade
             int lvl = _pendingLevels[def.type];
             if (_tempPoints <= 0 || lvl >= def.maxLevel) return;
 
-            _pendingLevels[def.type] = lvl + 1;
+            _pendingLevels[def.type] = lvl + UpgradeStep;
             _tempPoints--;
             Refresh();
         }
@@ -166,15 +167,15 @@ namespace Game.UI.Upgrade
                 _progress.SetLevel(kv.Key, kv.Value);
 
             int delta = _tempPoints - _progress.Points;
-            if (delta != 0) _progress.AddPoints(delta); else _progress.Save();
+            if (delta != 0) _progress.AddPoints(delta);
+            else _progress.Save();
 
-            var playerHealth = FindObjectOfType<Game.Player.PlayerHealth>();
-            if (playerHealth != null) playerHealth.RecalculateFromStats();
+            if (DI.TryResolve<Game.Core.App.IPlayerRef>(out var pref) && pref.Health != null)
+                pref.Health.RecalculateFromStats();
 
-            ResetPending();
-            Refresh();
-            Close();
+            gameObject.SetActive(false); 
         }
+
 
         private void Cancel()
         {

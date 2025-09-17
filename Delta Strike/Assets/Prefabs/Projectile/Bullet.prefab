@@ -166,3 +166,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   impactVfxPrefab: {fileID: 5277075633699550472, guid: ccfe5400b16355743969f33572be00f0, type: 3}
+  audioClips: {fileID: 11400000, guid: 4278dbc05455e6848b044f166220a8b1, type: 2}

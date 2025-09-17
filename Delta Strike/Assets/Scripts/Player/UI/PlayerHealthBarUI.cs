@@ -8,33 +8,37 @@ namespace Game.Player.UI
 {
     public sealed class PlayerHealthBarUI : MonoBehaviour
     {
-        [SerializeField] private PlayerHealth playerHealth;
+        [SerializeField] private PlayerHealth _playerHealth;
+        
         [Header("Targets (either)")]
-        [SerializeField] private Image fillImage;   
-        [SerializeField] private Slider slider;     
-        [SerializeField] private TMP_Text text;
+        [SerializeField] private Image _fillImage; 
+        [SerializeField] private Slider _slider;  
+        [SerializeField] private TMP_Text _text;
 
         [Header("Options")]
-        [SerializeField] private bool fillFromRight = true; 
+        [SerializeField] private bool _fillFromRight = true; 
+        
+        private const float SliderMin = 0f;
+        private const float SliderMax = 1f;
 
         private void OnEnable()
         {
-            if (playerHealth == null && DI.TryResolve<IPlayerRef>(out var pref))
-                playerHealth = pref.Health as PlayerHealth;
+            if (_playerHealth == null && DI.TryResolve<IPlayerRef>(out var pref))
+                _playerHealth = pref.Health as PlayerHealth;
 
-            if (playerHealth != null)
+            if (_playerHealth != null)
             {
-                playerHealth.OnChanged += OnHealthChanged;
-                OnHealthChanged(playerHealth.Current, playerHealth.Max);
+                _playerHealth.OnChanged += OnHealthChanged;
+                OnHealthChanged(_playerHealth.Current, _playerHealth.Max);
             }
 
-            if (slider != null)
+            if (_slider != null)
             {
-                slider.minValue = 0f;
-                slider.maxValue = 1f;
-                slider.wholeNumbers = false;
-                slider.interactable = false;
-                slider.direction = fillFromRight
+                _slider.minValue = SliderMin;
+                _slider.maxValue = SliderMax;
+                _slider.wholeNumbers = false;
+                _slider.interactable = false;
+                _slider.direction = _fillFromRight
                     ? Slider.Direction.LeftToRight
                     : Slider.Direction.RightToLeft;                
             }
@@ -42,17 +46,17 @@ namespace Game.Player.UI
 
         private void OnDisable()
         {
-            if (playerHealth != null)
-                playerHealth.OnChanged -= OnHealthChanged;
+            if (_playerHealth != null)
+                _playerHealth.OnChanged -= OnHealthChanged;
         }
 
         private void OnHealthChanged(float current, float max)
         {
             float ratio = max > 0f ? current / max : 0f;
 
-            if (fillImage != null) fillImage.fillAmount = ratio;
-            if (slider != null)    slider.value = ratio;
-            if (text != null)      text.text = $"{Mathf.CeilToInt(current)}/{Mathf.CeilToInt(max)}";
+            if (_fillImage != null) _fillImage.fillAmount = ratio;
+            if (_slider != null)    _slider.value = ratio;
+            if (_text != null)      _text.text = $"{Mathf.CeilToInt(current)}/{Mathf.CeilToInt(max)}";
         }
     }
 }

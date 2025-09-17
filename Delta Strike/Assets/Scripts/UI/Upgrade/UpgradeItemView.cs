@@ -1,16 +1,17 @@
 ﻿using Game.Core.Config;
 using TMPro;                 
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.UI.Upgrade
 {
     public sealed class UpgradeItemView : MonoBehaviour
     {
-        [SerializeField] private TMP_Text label;               
-        [SerializeField] private TMP_Text levelText;           
-        [SerializeField] private Button plusButton;
-        [SerializeField] private Image iconImage;
+        [SerializeField] private TMP_Text _label;  
+        [SerializeField] private TMP_Text _levelText;  
+        [SerializeField] private Button _plusButton;
+        [SerializeField] private Image _iconImage;
 
         public UpgradeDef Def { get; private set; }
 
@@ -20,20 +21,20 @@ namespace Game.UI.Upgrade
         {
             Def = def;
             _onPlus = onPlus;
-            if (label) label.text = string.IsNullOrEmpty(def.displayName) ? def.type.ToString() : def.displayName;
-            if (iconImage) iconImage.sprite = def.icon;
+            if (_label) _label.text = string.IsNullOrEmpty(def.displayName) ? def.type.ToString() : def.displayName;
+            if (_iconImage) _iconImage.sprite = def.icon;
             SetLevel(currentLevel, canPlus: true);
-            if (plusButton)
+            if (_plusButton)
             {
-                plusButton.onClick.RemoveAllListeners();
-                plusButton.onClick.AddListener(() => _onPlus?.Invoke(def));
+                _plusButton.onClick.RemoveAllListeners();
+                _plusButton.onClick.AddListener(() => _onPlus?.Invoke(def));
             }
         }
 
         public void SetLevel(int level, bool canPlus)
         {
-            if (levelText) levelText.text = $"Lv {level}/{Def.maxLevel}";
-            if (plusButton) plusButton.interactable = canPlus;
+            if (_levelText) _levelText.text = $"Lv {level}/{Def.maxLevel}";
+            if (_plusButton) _plusButton.interactable = canPlus;
         }
     }
 }

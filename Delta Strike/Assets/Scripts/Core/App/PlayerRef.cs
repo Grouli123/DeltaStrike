@@ -2,16 +2,6 @@
 
 namespace Game.Core.App
 {
-    public interface IPlayerRef
-    {
-        Transform Transform { get; }
-        Game.Player.PlayerController Controller { get; }
-        Game.Player.PlayerHealth Health { get; }
-        CharacterController CC { get; }
-
-        void Attach(Game.Player.PlayerController pc);
-    }
-
     public sealed class PlayerRef : IPlayerRef
     {
         public Transform Transform { get; private set; }

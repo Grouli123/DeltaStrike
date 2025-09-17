@@ -1,10 +1,11 @@
 ﻿using Game.Core.App;
 using Game.Core.DI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public sealed class CursorLocker : MonoBehaviour
 {
-    [SerializeField] private bool lockOnStart = true;
+    [SerializeField] private bool _lockOnStart = true;
     private IGameplayBlockService _block;
 
     private void Awake()
@@ -12,7 +13,7 @@ public sealed class CursorLocker : MonoBehaviour
         _block = DI.Resolve<IGameplayBlockService>();
         _block.OnChanged += OnBlockChanged;
 
-        if (lockOnStart) Lock();
+        if (_lockOnStart) Lock();
     }
 
     private void OnDestroy()

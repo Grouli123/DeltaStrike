@@ -1,18 +1,21 @@
 ﻿using Game.Core.DI;
 using Game.Input;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.UI.Mobile
 {
     public sealed class MobileInputBinder : MonoBehaviour
     {
+        private const float OpenUpgradePulseValue = 1f;
+        
         [Header("UI")]
-        [SerializeField] private VirtualJoystick moveJoystick;
-        [SerializeField] private VirtualJoystick lookJoystick;  
-        [SerializeField] private FireButton     fireButton;
+        [SerializeField] private VirtualJoystick _moveJoystick;
+        [SerializeField] private VirtualJoystick _lookJoystick; 
+        [SerializeField] private FireButton     _fireButton;
 
         [Header("Sensitivity")]
-        [SerializeField] private float lookSensitivity = 120f; 
+        [SerializeField] private float _lookSensitivity = 120f; 
 
         private MobileInputService _mobile;
         private float _openUpgradesPulse; 
@@ -32,12 +35,12 @@ namespace Game.UI.Mobile
         {
             if (_mobile == null) return;
 
-            _mobile.moveAxis = moveJoystick ? moveJoystick.Value : Vector2.zero;
+            _mobile.moveAxis = _moveJoystick ? _moveJoystick.Value : Vector2.zero;
 
-            var look = lookJoystick ? lookJoystick.Value : Vector2.zero;
-            _mobile.lookDelta = look * (lookSensitivity * Time.deltaTime);
+            var look = _lookJoystick ? _lookJoystick.Value : Vector2.zero;
+            _mobile.lookDelta = look * (_lookSensitivity * Time.deltaTime);
 
-            _mobile.firePressed = fireButton && fireButton.IsPressed;
+            _mobile.firePressed = _fireButton && _fireButton.IsPressed;
 
             if (_openUpgradesPulse > 0f)
             {
@@ -52,7 +55,7 @@ namespace Game.UI.Mobile
 
         public void OnOpenUpgradesButton()
         {
-            _openUpgradesPulse = 1f;
+            _openUpgradesPulse = OpenUpgradePulseValue;
         }
     }
 }

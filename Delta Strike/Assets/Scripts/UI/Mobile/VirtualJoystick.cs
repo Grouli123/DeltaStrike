@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.UI.Mobile
 {
     public sealed class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
     {
-        [SerializeField] private RectTransform background;
-        [SerializeField] private RectTransform handle;
-        [SerializeField] private float handleRange = 80f; 
+        [SerializeField] private RectTransform _background;
+        [SerializeField] private RectTransform _handle;
+        [SerializeField] private float _handleRange = 80f; 
 
         public Vector2 Value { get; private set; } 
 
@@ -16,28 +17,28 @@ namespace Game.UI.Mobile
 
         private void Awake()
         {
-            if (background == null) background = transform as RectTransform;
-            if (handle != null) _startAnchor = handle.anchoredPosition;
+            if (_background == null) _background = transform as RectTransform;
+            if (_handle != null) _startAnchor = _handle.anchoredPosition;
         }
 
         public void OnPointerDown(PointerEventData eventData) => OnDrag(eventData);
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (background == null || handle == null) return;
+            if (_background == null || _handle == null) return;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                background, eventData.position, eventData.pressEventCamera, out var localPoint);
+                _background, eventData.position, eventData.pressEventCamera, out var localPoint);
 
-            var clamped = Vector2.ClampMagnitude(localPoint, handleRange);
-            handle.anchoredPosition = _startAnchor + clamped;
-            Value = clamped / handleRange;
+            var clamped = Vector2.ClampMagnitude(localPoint, _handleRange);
+            _handle.anchoredPosition = _startAnchor + clamped;
+            Value = clamped / _handleRange;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             Value = Vector2.zero;
-            if (handle != null) handle.anchoredPosition = _startAnchor;
+            if (_handle != null) _handle.anchoredPosition = _startAnchor;
         }
     }
 }
