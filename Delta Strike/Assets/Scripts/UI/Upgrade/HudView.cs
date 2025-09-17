@@ -1,6 +1,5 @@
 ﻿using Game.Core.DI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.UI.Upgrade
 {
@@ -18,12 +17,12 @@ namespace Game.UI.Upgrade
         }
 
         public void OnOpenUpgrades() => Open();
+        public void OpenUpgrades()   => Open();   
 
         public void Toggle()
         {
             if (_upgradeWindowRoot == null) return;
-            bool next = !_upgradeWindowRoot.activeSelf;
-            _upgradeWindowRoot.SetActive(next);
+            _upgradeWindowRoot.SetActive(!_upgradeWindowRoot.activeSelf);
         }
 
         public void Open()
@@ -41,7 +40,7 @@ namespace Game.UI.Upgrade
         private void Update()
         {
             if (_input.IsOpenUpgradePressed)
-                Toggle();
+                OpenUpgrades();
         }
     }
 }

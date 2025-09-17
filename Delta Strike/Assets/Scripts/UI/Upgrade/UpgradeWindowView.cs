@@ -6,7 +6,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Game.Core.App;
-using UnityEngine.Serialization;
 
 namespace Game.UI.Upgrade
 {

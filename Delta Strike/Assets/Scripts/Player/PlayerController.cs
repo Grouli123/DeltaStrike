@@ -3,10 +3,11 @@ using Game.Core.DI;
 using Game.Input;
 using UnityEngine;
 using Game.Core.App;
-using UnityEngine.Serialization;
 
 namespace Game.Player
 {
+    public enum LookYawAxis { X, Y }
+    
     [RequireComponent(typeof(CharacterController))]
     public sealed class PlayerController : MonoBehaviour
     {
@@ -20,14 +21,29 @@ namespace Game.Player
         [SerializeField] private float _lookSensitivity = 2f;
         [SerializeField] private float _jumpHeight = 1.2f;
 
+        [SerializeField] private float _mouseLookSensitivity  = 2f; 
+        [SerializeField] private float _mobileLookSensitivity = 220f;
+        
+        [Header("Look Options")]
+        [SerializeField] private bool _horizontalOnly = true;   
+        [SerializeField] private LookYawAxis _mouseYawAxis  = LookYawAxis.X;
+        [SerializeField] private LookYawAxis _mobileYawAxis = LookYawAxis.X;
+        [SerializeField] private bool _invertYaw = false;
+        
         private CharacterController _cc;
         private IInputService _input;
         private float _pitch;
         private float _vy;
+        private float _pitchMinDegrees = -80;
+        private float _pitchMaxDegrees = 80;
+        
+        private const float MaxLookMagnitude = 20f;
 
         private UpgradeConfig _cfg;
         private Game.Systems.Progress.IProgressService _progress;
         private IGameplayBlockService _block;
+        
+        private bool IsMobileInput => _input is MobileInputService;
 
         private void Awake()
         {
@@ -37,6 +53,13 @@ namespace Game.Player
             _progress = DI.Resolve<Game.Systems.Progress.IProgressService>();
             _block = DI.Resolve<IGameplayBlockService>();
 
+            if (_cameraPivot == null && _playerCamera != null) 
+                _cameraPivot = _playerCamera.transform;
+            
+            _pitch = 0f;
+            
+            if (_cameraPivot) _cameraPivot.localEulerAngles = new Vector3(0f, 0f, 0f);
+            
             if (_playerCamera == null) _playerCamera = GetComponentInChildren<Camera>();
             if (_cameraPivot == null && _playerCamera != null) _cameraPivot = _playerCamera.transform;
 
@@ -59,14 +82,44 @@ namespace Game.Player
         private void Update()
         {
             if (_block != null && _block.IsBlocked) return;
-            
-            var look = _input.LookDelta * _lookSensitivity;
-            transform.Rotate(0f, look.x, 0f);
-            _pitch = Mathf.Clamp(_pitch - look.y, -80f, 80f);
-            if (_cameraPivot != null) _cameraPivot.localEulerAngles = new Vector3(_pitch, 0f, 0f);
 
-            var axis = _input.MoveAxis; 
-            var hor = (transform.forward * axis.y + transform.right * axis.x) * GetSpeed();
+            var lookInput = _input.LookDelta; 
+
+            float yawDeltaDeg;
+            if (IsMobileInput)
+            {
+                float yawAxisVal = (_mobileYawAxis == LookYawAxis.X) ? lookInput.x : lookInput.y;
+                if (_invertYaw) yawAxisVal = -yawAxisVal;
+
+                yawDeltaDeg = yawAxisVal * _mobileLookSensitivity * Time.deltaTime;
+            }
+            else
+            {
+                const float MaxMouseDelta = 20f;
+                if (lookInput.magnitude > MaxMouseDelta)
+                    lookInput = lookInput.normalized * MaxMouseDelta;
+
+                float yawAxisVal = (_mouseYawAxis == LookYawAxis.X) ? lookInput.x : lookInput.y;
+                if (_invertYaw) yawAxisVal = -yawAxisVal;
+
+                yawDeltaDeg = yawAxisVal * _mouseLookSensitivity;
+            }
+
+            transform.Rotate(0f, yawDeltaDeg, 0f);
+
+            if (_horizontalOnly)
+            {
+                _pitch = 0f;
+                if (_cameraPivot) _cameraPivot.localEulerAngles = Vector3.zero;
+            }
+            else
+            {
+                _pitch = Mathf.Clamp(_pitch - lookInput.y * (IsMobileInput ? _mobileLookSensitivity * Time.deltaTime : _mouseLookSensitivity), -80f, 80f);
+                if (_cameraPivot) _cameraPivot.localEulerAngles = new Vector3(_pitch, 0f, 0f);
+            }
+
+            var axis = _input.MoveAxis;
+            var hor  = (transform.forward * axis.y + transform.right * axis.x) * GetSpeed();
 
             if (_cc.isGrounded)
             {
@@ -76,10 +129,10 @@ namespace Game.Player
             }
             _vy += _gravity * Time.deltaTime;
 
-            var move = new Vector3(hor.x, _vy, hor.z);
-            _cc.Move(move * Time.deltaTime);
+            _cc.Move(new Vector3(hor.x, _vy, hor.z) * Time.deltaTime);
 
             if (_input.IsFirePressed && _gun != null) _gun.TryFire();
         }
+
     }
 }

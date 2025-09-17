@@ -188,9 +188,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveJoystick: {fileID: 1417625618}
-  _lookJoystick: {fileID: 1417625618}
+  _lookJoystick: {fileID: 1002009113}
   _fireButton: {fileID: 441315223}
-  _lookSensitivity: 120
+  _upgradesButton: {fileID: 271561405}
+  _deadZone: 0.1
+  _fireWhenLooking: 1
+  _fireLookThreshold: 0.35
+  invertMoveX: 0
+  invertMoveY: 0
+  invertLookX: 1
+  invertLookY: 1
 --- !u!4 &119791654
 Transform:
   m_ObjectHideFlags: 0
@@ -1058,7 +1065,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &441315223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1167,10 +1174,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1279633510}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.7908957, y: 0.061446663}
-  m_AnchorMax: {x: 0.9061667, y: 0.163}
-  m_AnchoredPosition: {x: -0.5, y: 5}
-  m_SizeDelta: {x: -21, y: -10}
+  m_AnchorMin: {x: 0.54700005, y: 0.15415362}
+  m_AnchorMax: {x: 0.65500003, y: 0.25763017}
+  m_AnchoredPosition: {x: -3.5, y: -3.5}
+  m_SizeDelta: {x: -6, y: -12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &479674031
 GameObject:
@@ -1658,6 +1665,8 @@ MonoBehaviour:
   _gravity: -9.81
   _lookSensitivity: 2
   _jumpHeight: 1.2
+  _mouseLookSensitivity: 2
+  _mobileLookSensitivity: 220
 --- !u!143 &542086483
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2871,6 +2880,103 @@ MonoBehaviour:
     m_Bits: 128
   _muzzleFlash: {fileID: 1241690218}
   _gunClips: {fileID: 11400000, guid: 4278dbc05455e6848b044f166220a8b1, type: 2}
+--- !u!1 &1002009112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1002009116}
+  - component: {fileID: 1002009115}
+  - component: {fileID: 1002009114}
+  - component: {fileID: 1002009113}
+  m_Layer: 5
+  m_Name: BackgroundLookJoystick
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1002009113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002009112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1323b2e137e34bd0b2a79cefcaad44e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _background: {fileID: 1002009116}
+  _handle: {fileID: 1499478336}
+  _mode: 0
+  hideBackgroundWhenIdle: 0
+  handleRange: 80
+  deadZone: 0.12
+  invertX: 0
+  invertY: 0
+--- !u!114 &1002009114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002009112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.26415092, g: 0.25667492, b: 0.25667492, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1002009115
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002009112}
+  m_CullTransparentMesh: 1
+--- !u!224 &1002009116
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002009112}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1499478336}
+  m_Father: {fileID: 1279633510}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.7908957, y: 0.15415362}
+  m_AnchorMax: {x: 0.9061667, y: 0.25763017}
+  m_AnchoredPosition: {x: -3, y: -2}
+  m_SizeDelta: {x: -21, y: -13}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1059726197
 GameObject:
   m_ObjectHideFlags: 0
@@ -3284,7 +3390,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1279633510
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3298,6 +3404,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1417625615}
+  - {fileID: 1002009116}
   - {fileID: 441315227}
   - {fileID: 119791654}
   m_Father: {fileID: 0}
@@ -3527,7 +3634,7 @@ GameObject:
   - component: {fileID: 1417625616}
   - component: {fileID: 1417625618}
   m_Layer: 5
-  m_Name: BackgroundJoystick
+  m_Name: BackgroundMoveJoystick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3548,10 +3655,10 @@ RectTransform:
   - {fileID: 1828476211}
   m_Father: {fileID: 1279633510}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.04072916, y: 0.069679976}
-  m_AnchorMax: {x: 0.14537501, y: 0.163}
-  m_AnchoredPosition: {x: 1.5, y: -2.5}
-  m_SizeDelta: {x: -1, y: 7}
+  m_AnchorMin: {x: 0.08343748, y: 0.17236678}
+  m_AnchorMax: {x: 0.193, y: 0.25763017}
+  m_AnchoredPosition: {x: 1, y: -20}
+  m_SizeDelta: {x: -11, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1417625616
 MonoBehaviour:
@@ -3605,7 +3712,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _background: {fileID: 1417625615}
   _handle: {fileID: 1828476211}
-  _handleRange: 80
+  _mode: 0
+  hideBackgroundWhenIdle: 0
+  handleRange: 100
+  deadZone: 0.09
+  invertX: 0
+  invertY: 0
 --- !u!1 &1466872441
 GameObject:
   m_ObjectHideFlags: 0
@@ -3702,6 +3814,81 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1499478335
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1499478336}
+  - component: {fileID: 1499478338}
+  - component: {fileID: 1499478337}
+  m_Layer: 5
+  m_Name: Joystick
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1499478336
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499478335}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1002009116}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.125, y: 0.115}
+  m_AnchorMax: {x: 0.87500006, y: 0.87000006}
+  m_AnchoredPosition: {x: 0, y: 1.5}
+  m_SizeDelta: {x: 0, y: -1}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1499478337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499478335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1499478338
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499478335}
+  m_CullTransparentMesh: 1
 --- !u!1 &1521555437
 GameObject:
   m_ObjectHideFlags: 0
@@ -3905,12 +4092,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d76c5edc28543639598ee1176f85223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  root: {fileID: 508638297}
-  titleText: {fileID: 736941995}
-  messageText: {fileID: 1739807747}
-  restartButton: {fileID: 1999773289}
-  quitButton: {fileID: 1723159772}
-  blocker: {fileID: 499594272}
+  _root: {fileID: 508638297}
+  _titleText: {fileID: 736941995}
+  _messageText: {fileID: 1739807747}
+  _restartButton: {fileID: 1999773289}
+  _quitButton: {fileID: 1723159772}
+  _blocker: {fileID: 499594272}
 --- !u!1 &1640988717
 GameObject:
   m_ObjectHideFlags: 0

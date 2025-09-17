@@ -1,9 +1,9 @@
-﻿// Assets/Scripts/UI/GameEndWindowView.cs
-using Game.Core.App;
+﻿using Game.Core.App;
 using Game.Core.DI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.UI
@@ -14,12 +14,12 @@ namespace Game.UI
         private const string DefeatTitle  = "Defeat";
 
         [Header("Refs")]
-        [SerializeField] private GameObject root;
-        [SerializeField] private TMP_Text titleText;
-        [SerializeField] private TMP_Text messageText;
-        [SerializeField] private Button restartButton;
-        [SerializeField] private Button quitButton;
-        [SerializeField] private GameObject blocker;
+        [SerializeField] private GameObject _root;
+        [SerializeField] private TMP_Text _titleText;
+        [SerializeField] private TMP_Text _messageText;
+        [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _quitButton;
+        [SerializeField] private GameObject _blocker;
 
         private IGameplayBlockService _block;
         private IGameStateService _state;
@@ -27,19 +27,19 @@ namespace Game.UI
         private void Awake()
         {
             _block = DI.Resolve<IGameplayBlockService>();
-            if (root == null) root = gameObject;
+            if (_root == null) _root = gameObject;
             SetVisible(false);
 
-            if (restartButton) restartButton.onClick.AddListener(Restart);
-            if (quitButton)    quitButton.onClick.AddListener(Restart); // или свой выход в меню
+            if (_restartButton) _restartButton.onClick.AddListener(Restart);
+            if (_quitButton)    _quitButton.onClick.AddListener(QuitGame);
 
-            if (blocker)
+            if (_blocker)
             {
-                var btn = blocker.GetComponent<Button>() ?? blocker.AddComponent<Button>();
+                var btn = _blocker.GetComponent<Button>() ?? _blocker.AddComponent<Button>();
                 btn.transition = Selectable.Transition.None;
             }
 
-            RewireState();                          // подписка на новый сервис
+            RewireState();
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
@@ -51,8 +51,8 @@ namespace Game.UI
 
         private void OnSceneLoaded(Scene _, LoadSceneMode __)
         {
-            Hide();         // на всякий — снимаем блок/курсор
-            RewireState();  // перепривязка после перезагрузки
+            Hide();         
+            RewireState();  
         }
 
         private void RewireState()
@@ -62,8 +62,6 @@ namespace Game.UI
             _state.OnWin  += ShowWin;
             _state.OnLose += ShowLose;
 
-            // БОЛЬШЕ НЕ делаем автопроверку типа "если enemies==0 → ShowWin()".
-            // Ранний WIN мешал захвату ввода на старте.
         }
 
         private void UnwireState()
@@ -81,8 +79,8 @@ namespace Game.UI
 
         private void Show(string title, string message)
         {
-            if (titleText)   titleText.text   = title;
-            if (messageText) messageText.text = message;
+            if (_titleText)   _titleText.text   = title;
+            if (_messageText) _messageText.text = message;
 
             SetVisible(true);
             _block?.SetBlocked(true);
@@ -104,15 +102,42 @@ namespace Game.UI
 
         private void SetVisible(bool v)
         {
-            (root ?? gameObject).SetActive(v);
-            if (blocker) blocker.SetActive(v);
+            (_root ?? gameObject).SetActive(v);
+            if (_blocker) _blocker.SetActive(v);
         }
 
         private void Restart()
         {
-            Hide(); // 
+            Hide(); 
             var idx = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(idx);
+        }
+        
+        private void QuitGame()
+        {
+            Hide();
+
+            if (Game.Core.DI.DI.TryResolve<Game.Systems.Progress.IProgressService>(out var progress))
+                progress.Save();
+            PlayerPrefs.Save();
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_ANDROID
+    try
+    {
+        Application.Quit();
+
+        using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+        using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
+        {
+            activity.Call<bool>("moveTaskToBack", true);
+        }
+    }
+    catch { Application.Quit(); }
+#else
+    Application.Quit();
+#endif
         }
     }
 }

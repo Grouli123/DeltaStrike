@@ -1,34 +1,35 @@
 ﻿using Game.Core.Config;
 using Game.Core.DI;
 using Game.Core.Save;
-using Game.Enemies;
 using Game.Systems.Progress;
-using UnityEngine;
 using Game.Input;
 using Game.Core.App;
+using UnityEngine;
+using Game.Enemies;
 
 namespace Game.Bootstrap
 {
     [DefaultExecutionOrder(-1000)]
     public sealed class Bootstrapper : MonoBehaviour
     {
-        private const int TargetFrameRate = 120;
+        private const int DesktopTargetFPS = 120;
+        private const int MobileTargetFPS  = 60;
 
         [Header("Configs")]
         public UpgradeConfig upgradeConfig;
         public EnemyConfig enemyConfig;
 
         [Header("Input")]
-        public InputMode inputMode = InputMode.Desktop;
+        public InputMode inputMode = InputMode.Auto; 
 
         private void Awake()
         {
             DI.Clear();
 
-            Application.targetFrameRate = TargetFrameRate;
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = Application.isMobilePlatform ? MobileTargetFPS : DesktopTargetFPS;
 
             DI.Bind<ISaveService>(new PlayerPrefsSaveService());
-
             if (upgradeConfig) DI.Bind(upgradeConfig);
             if (enemyConfig)   DI.Bind(enemyConfig);
 
@@ -39,10 +40,22 @@ namespace Game.Bootstrap
             DI.Bind<IGameplayBlockService>(new GameplayBlockService());
             DI.Bind<IGameStateService>(new GameStateService());
 
-            if (inputMode == InputMode.Desktop || !Application.isMobilePlatform)
-                DI.Bind<IInputService>(new DesktopInputService());
-            else
-                DI.Bind<IInputService>(new MobileInputService());
+            IInputService inputSvc;
+            switch (inputMode)
+            {
+                case InputMode.Desktop:
+                    inputSvc = new DesktopInputService();
+                    break;
+                case InputMode.Mobile:
+                    inputSvc = new MobileInputService();
+                    break;
+                default: 
+                    inputSvc = Application.isMobilePlatform
+                        ? new MobileInputService()
+                        : new DesktopInputService();
+                    break;
+            }
+            DI.Bind<IInputService>(inputSvc);
 
             if (!DI.TryResolve<IPlayerRef>(out _))
                 DI.Bind<IPlayerRef>(new PlayerRef());

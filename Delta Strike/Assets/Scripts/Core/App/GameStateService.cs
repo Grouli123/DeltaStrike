@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Game.Enemies;
 using Game.Player;
-using UnityEngine;
 
 namespace Game.Core.App
 {
@@ -18,7 +17,7 @@ namespace Game.Core.App
         private readonly HashSet<EnemyHealth> _enemies = new();
         private PlayerHealth _player;
         private bool _ended;
-        private bool _hadEnemies; // <-- добавили
+        private bool _hadEnemies; 
 
         public void RegisterEnemy(EnemyHealth enemy)
         {
@@ -26,7 +25,7 @@ namespace Game.Core.App
             if (_enemies.Add(enemy))
             {
                 enemy.OnDied += HandleEnemyDied;
-                _hadEnemies = true; // <-- отмечаем, что враги в этой сессии были
+                _hadEnemies = true; 
                 OnEnemyCountChanged?.Invoke(AliveEnemies);
             }
         }
@@ -38,7 +37,7 @@ namespace Game.Core.App
             {
                 enemy.OnDied -= HandleEnemyDied;
                 OnEnemyCountChanged?.Invoke(AliveEnemies);
-                TryWin(); // победу проверяем тут
+                TryWin();
             }
         }
 
@@ -49,7 +48,6 @@ namespace Game.Core.App
             _player = player;
             if (_player != null) _player.OnDied += HandlePlayerDied;
 
-            // ВАЖНО: больше не вызываем TryWin() здесь — это и было ранним WIN.
         }
 
         private void HandleEnemyDied() => TryWin();
@@ -64,7 +62,7 @@ namespace Game.Core.App
         private void TryWin()
         {
             if (_ended) return;
-            if (_hadEnemies && _enemies.Count == 0 && !IsPlayerDead) // <-- учитываем _hadEnemies
+            if (_hadEnemies && _enemies.Count == 0 && !IsPlayerDead)
             {
                 _ended = true;
                 OnWin?.Invoke();
