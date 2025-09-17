@@ -12,6 +12,11 @@ namespace Game.UI.Upgrade
 {
     public sealed class UpgradeWindowView : MonoBehaviour
     {
+        [Header("Pause")]
+        [SerializeField] private bool pauseWithTimeScale = true;
+        private float _savedTimeScale = 1f;
+        private bool _pausedByMe;
+        
         [SerializeField] private TMP_Text _pointsText;   
         [SerializeField] private Transform _itemsRoot;
         [SerializeField] private UpgradeItemView _itemPrefab;
@@ -67,7 +72,14 @@ namespace Game.UI.Upgrade
             if (_blocker) _blocker.SetActive(true);
 
             _block?.SetBlocked(true);
-
+            
+            if (pauseWithTimeScale)
+            {
+                _savedTimeScale = Time.timeScale;
+                Time.timeScale  = 0f;
+                _pausedByMe     = true;
+            }
+            
 #if !UNITY_ANDROID && !UNITY_IOS
             _cursorWasLocked = Cursor.lockState == CursorLockMode.Locked;
             Cursor.lockState = CursorLockMode.None;
@@ -89,6 +101,12 @@ namespace Game.UI.Upgrade
 
             _block?.SetBlocked(false);
 
+            if (_pausedByMe)
+            {
+                Time.timeScale = _savedTimeScale;
+                _pausedByMe    = false;
+            }
+            
 #if !UNITY_ANDROID && !UNITY_IOS
             if (_cursorWasLocked)
             {
