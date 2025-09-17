@@ -415,7 +415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upgradeConfig: {fileID: 11400000, guid: 3c1f7258718aeda49a43337afc91fd6e, type: 2}
   enemyConfig: {fileID: 11400000, guid: e3612f066ea9d754691302effb88b996, type: 2}
-  inputMode: 0
+  inputMode: 1
 --- !u!4 &174157974
 Transform:
   m_ObjectHideFlags: 0
@@ -1667,6 +1667,10 @@ MonoBehaviour:
   _jumpHeight: 1.2
   _mouseLookSensitivity: 2
   _mobileLookSensitivity: 220
+  _horizontalOnly: 1
+  _mouseYawAxis: 0
+  _mobileYawAxis: 0
+  _invertYaw: 0
 --- !u!143 &542086483
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3390,7 +3394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1279633510
 RectTransform:
   m_ObjectHideFlags: 0
